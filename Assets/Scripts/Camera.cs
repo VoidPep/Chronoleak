@@ -3,20 +3,22 @@ using UnityEngine;
 
 public class Camera : MonoBehaviour
 {
-    [Header("Target Settings")]
-    public Transform target;
-    public Vector3 offset = new(0f, 2f, -5f);
+    [Header("Target Settings")] public Transform target;
+    public Vector3 offset = new(0f, 12f, -8f);
 
-    [Header("Camera Settings")]
-    public float followSpeed = 5f;
-    public float rotationSpeed = 10f;
+    [Header("Camera Settings")] public float followSpeed = 5f;
+
+    private void Start()
+    {
+        offset = new Vector3(0f, 12f, -8f);
+    }
 
     private void LateUpdate()
     {
-        var targetPosition = target.position + target.TransformDirection(offset);
-        transform.position = Vector3.Lerp(transform.position, targetPosition, followSpeed * Time.deltaTime);
+        var desiredPosition = target.position + offset;
+        var smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, followSpeed);
 
-        var targetRotation = Quaternion.LookRotation(target.position - transform.position);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        transform.position = smoothedPosition;
+        transform.rotation = Quaternion.Euler(50f, 0f, 0f);
     }
 }
